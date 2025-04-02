@@ -11,10 +11,12 @@
 static inline void zakljucaj()
 {
 	sigset_t set;
-	sigemptyset(&set);
-	sigaddset(&set, SIGUSR1);
+	sigemptyset(&set); //prazan skup
+	sigaddset(&set, SIGUSR1); //dodamo signale koje zelimo blokirati u skup
 	sigaddset(&set, SIGTERM);
-	sigprocmask(SIG_BLOCK, &set, NULL);
+	sigaddset(&set, SIGUSR2);
+	sigaddset(&set, SIGINT);
+	sigprocmask(SIG_BLOCK, &set, NULL); //blokiramo te signale
 }
 static inline void otkljucaj()
 {
@@ -22,7 +24,9 @@ static inline void otkljucaj()
 	sigemptyset(&set);
 	sigaddset(&set, SIGUSR1);
 	sigaddset(&set, SIGTERM);
-	sigprocmask(SIG_UNBLOCK, &set, NULL);
+	sigaddset(&set, SIGUSR2);
+	sigaddset(&set, SIGINT);
+	sigprocmask(SIG_UNBLOCK, &set, NULL); //odblokiramo te signale
 }
 
 #ifdef DEBUG

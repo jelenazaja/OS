@@ -83,7 +83,7 @@ static int pocetno_postavljanje()
 
 	/* 1. maskiranje signala SIGUSR1 */
 	act.sa_handler = obradi_signal;
-	sigemptyset(&act.sa_mask);
+	sigemptyset(&act.sa_mask); //nema blokiranja  -- tako da drugi signali (i isti) mogu doci tokom obrade
 	act.sa_flags = 0;
 	sigaction(SIGUSR1, &act, NULL);
 
@@ -92,6 +92,15 @@ static int pocetno_postavljanje()
 	sigemptyset(&act.sa_mask);
 	sigaction(SIGTERM, &act, NULL);
 
+	/* 3. maskiranje signala SIGUSR2 */
+	act.sa_handler = obradi_signal;
+	sigemptyset(&act.sa_mask);
+	sigaction(SIGUSR2, &act, NULL);
+
+	/* 4. maskiranje signala SIGINT */
+	act.sa_handler = obradi_signal;
+	sigemptyset(&act.sa_mask);
+	sigaction(SIGINT, &act, NULL);
 	return 0;
 }
 
@@ -105,5 +114,20 @@ static void obradi_signal(int sig)
 	else if (sig == SIGTERM) {
 		log("\nsignal SIGTERM");
 		kraj_rada = 1;
+	}
+	else if(sig == SIGUSR2){
+		log("\nsignal SIGUSR2");
+		while(1){
+			long broj = uzmi_iz_medjuspremnika();
+			if(broj == -1) break;
+			else printf("%ld\n", broj);
+		}
+	}
+	else if(sig == SIGINT){
+		log("\nsignal SIGINT");
+		while(1){
+			long broj = uzmi_iz_medjuspremnika();
+			if(broj == -1) break;
+		}
 	}
 }
