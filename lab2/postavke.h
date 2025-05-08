@@ -12,20 +12,26 @@
 
 static inline void zakljucaj()
 {
+	//printf("[zakljucaj]\n");
 	sigset_t set;
 	sigemptyset(&set);
 	sigaddset(&set, SIGUSR1);
 	sigaddset(&set, SIGTERM);
+	sigaddset(&set, SIGUSR2);
+	sigaddset(&set, SIGINT);
 	sigprocmask(SIG_BLOCK, &set, NULL);
 	extern sem_t sem;
 	sem_wait(&sem);
 }
 static inline void otkljucaj()
-{
+{   
+	//printf("[otkljucaj]\n");
 	sigset_t set;
 	sigemptyset(&set);
 	sigaddset(&set, SIGUSR1);
 	sigaddset(&set, SIGTERM);
+	sigaddset(&set, SIGUSR2);
+	sigaddset(&set, SIGINT);
 	sigprocmask(SIG_UNBLOCK, &set, NULL);
 	extern sem_t sem;
 	sem_post(&sem);

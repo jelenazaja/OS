@@ -21,9 +21,9 @@ long long lcg_postavi(long long new_seed)
 
 long lcg_gen()
 {
-	//zakljucaj();
+	zakljucaj();
 	seed = (A * seed + C) & MOD;
-	//otkljucaj();
+	otkljucaj();
 
 	return (long) (seed >> 16);
 }
