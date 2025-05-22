@@ -3,6 +3,11 @@
 #include "postavke.h"
 #include "medjuspremnik.h"
 
+#include <pthread.h>
+
+extern pthread_cond_t red;
+
+
 static long medjuspremnik[VEL_M] = {}; //početno sve nule
 static volatile int prvi = 0, zadnji = 0, mjesta = VEL_M;
 
@@ -16,6 +21,7 @@ int dodaj_u_medjuspremnik(long broj)
 	mjesta--;
 	medjuspremnik[zadnji] = broj;
 	zadnji = (zadnji + 1) % VEL_M;
+	//pthread_cond_broadcast(&red); // obavijesti potrošače da ima novih brojeva!
 	otkljucaj();
 
 	return 0;
@@ -32,6 +38,9 @@ long uzmi_iz_medjuspremnika()
 	long broj = medjuspremnik[prvi];
 	mjesta++;
 	prvi = (prvi + 1) % VEL_M;
+	// signaliziraj da ima mjesta!
+    //pthread_cond_broadcast(&red);
+
 	otkljucaj();
 
 	return broj;
@@ -39,21 +48,21 @@ long uzmi_iz_medjuspremnika()
 
 int zapisi_stanje_medjuspremnika(FILE *fp)
 {
-	zakljucaj();
+	//zakljucaj();
 	//bez provjere grešaka
 	int ima = VEL_M - mjesta;
 	fprintf(fp, "%d\n", ima);
 	int i;
 	for (i = 0; i < ima; i++)
 		fprintf(fp, "%ld\n", medjuspremnik[(prvi + i) % VEL_M]);
-	otkljucaj();
+	//otkljucaj();
 
 	return 0;
 }
 
 int ucitaj_stanje_medjuspremnika(FILE *fp)
 {
-	zakljucaj();
+	//zakljucaj();
 	//bez provjere grešaka
 	int ima;
 	fscanf(fp, "%d\n", &ima);
@@ -63,7 +72,7 @@ int ucitaj_stanje_medjuspremnika(FILE *fp)
 		fscanf(fp, "%ld\n", &broj);
 		dodaj_u_medjuspremnik(broj);
 	}
-	otkljucaj();
+	//otkljucaj();
 
 	return 0;
 }

@@ -10,21 +10,27 @@
 #include <pthread.h>
 
 static inline void zakljucaj()
-{
+{   
+	//printf("[zakljucaj]\n");
 	sigset_t set;
 	sigemptyset(&set);
 	sigaddset(&set, SIGUSR1);
 	sigaddset(&set, SIGTERM);
+	sigaddset(&set, SIGUSR2);
+	sigaddset(&set, SIGINT);
 	sigprocmask(SIG_BLOCK, &set, NULL);
 	extern pthread_mutex_t m;
 	pthread_mutex_lock(&m);
 }
 static inline void otkljucaj()
-{
+{	
+	//printf("[otkljucaj]\n");
 	sigset_t set;
 	sigemptyset(&set);
 	sigaddset(&set, SIGUSR1);
 	sigaddset(&set, SIGTERM);
+	sigaddset(&set, SIGUSR2);
+	sigaddset(&set, SIGINT);
 	sigprocmask(SIG_UNBLOCK, &set, NULL);
 	extern pthread_mutex_t m;
 	pthread_mutex_unlock(&m);
