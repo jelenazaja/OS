@@ -2,7 +2,7 @@
 
 CFLAGS = -Wall -MMD
 LDFLAGS = -O
-LDLIBS = -lm -lpthread
+LDLIBS = -lm -lpthread -lrt
 
 PROGRAM = main
 OBJEKTI = main.o medjuspremnik.o slucajni_brojevi.o
